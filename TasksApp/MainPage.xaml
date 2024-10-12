@@ -3,30 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TasksApp.MainPage" Title="Задачи">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
+    <!-- Основной Grid, который занимает весь экран -->
+    <Grid >
+        <!-- Внутренний контент, который занимает весь экран -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+        <!-- Вложенный контент: Frame и нижняя панель внутри основного Grid -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="70" />
+                <!-- Фиксированная высота для нижней панели -->
+            </Grid.RowDefinitions>
 
+            <Frame Grid.Row="0" Margin="0, 0, 0, 10">
+            </Frame>
 
-
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+            <!-- Панель внизу -->
+            <Grid x:Name="bottom_panel" Grid.Row="1" ColumnDefinitions="*,*,*" Padding="10">
+                <Button Text="Главная" Grid.Column="0" />
+                <Button Text="Создать" Grid.Column="1" />
+                <Button Text="Настройки" Grid.Column="2" />
+            </Grid>
+        </Grid>
+    </Grid>
 
 </ContentPage>
