@@ -1,32 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TasksApp.MainPage" Title="Задачи"
-             Loaded="ContentPage_Loaded">
+<ContentPage
+    x:Class="TasksApp.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Задачи"
+    Loaded="ContentPage_Loaded">
 
-    <!-- Основной Grid, который занимает весь экран -->
-    <Grid >
-        <!-- Внутренний контент, который занимает весь экран -->
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Вложенный контент: Frame и нижняя панель внутри основного Grid -->
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="70" />
-                <!-- Фиксированная высота для нижней панели -->
             </Grid.RowDefinitions>
 
-            <Frame Grid.Row="0" Margin="0, 0, 0, 10" x:Name="MainFrame">
-            </Frame>
+            <Frame
+                x:Name="MainFrame"
+                Grid.Row="0"
+                Margin="0,0,0,10" />
 
-            <!-- Панель внизу -->
-            <Grid x:Name="bottom_panel" Grid.Row="1" ColumnDefinitions="*,*,*" Padding="10">
-                <Button Text="Главная" Grid.Column="0"  x:Name="MainPageButton" Clicked="MainPageButton_Clicked"/>
-                <Button Text="Создать" Grid.Column="1" x:Name="CreatePageButton" Clicked="CreatePageButton_Clicked"/>
-                <Button Text="Настройки" Grid.Column="2" x:Name="SettingsPageButton" Clicked="SettingsPageButton_Clicked"/>
+            <Grid
+                x:Name="bottom_panel"
+                Grid.Row="1"
+                Padding="10"
+                ColumnDefinitions="*,*,*">
+                <Button
+                    x:Name="MainPageButton"
+                    Grid.Column="0"
+                    Clicked="MainPageButton_Clicked"
+                    Text="Главная" />
+                <Button
+                    x:Name="CreatePageButton"
+                    Grid.Column="1"
+                    Clicked="CreatePageButton_Clicked"
+                    Text="Создать" />
+                <Button
+                    x:Name="SettingsPageButton"
+                    Grid.Column="2"
+                    Clicked="SettingsPageButton_Clicked"
+                    Text="Настройки" />
             </Grid>
         </Grid>
     </Grid>

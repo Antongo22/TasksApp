@@ -1,11 +1,71 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TasksApp.Pages.CreateContentView">
-    <VerticalStackLayout>
-        <Label 
-            Text="Тут можно создать задачу!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+<ContentView
+    x:Class="TasksApp.Pages.CreateContentView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sys="clr-namespace:System;assembly=netstandard">
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+
+            <!--  Название задачи  -->
+            <Label Text="Название задачи" />
+            <Entry x:Name="TaskTitleEntry" Placeholder="Введите название задачи" />
+
+            <!--  Описание задачи  -->
+            <Label Margin="0,20,0,0" Text="Описание задачи" />
+            <Editor
+                x:Name="TaskDescriptionEditor"
+                AutoSize="TextChanges"
+                Placeholder="Введите описание задачи" />
+
+            <!--  Включение/Отключение даты выполнения  -->
+            <HorizontalStackLayout Margin="0,20,0,0">
+                <Label Text="Включить дату выполнения" VerticalOptions="Center" />
+                <Switch
+                    x:Name="DateSwitch"
+                    IsToggled="False"
+                    Toggled="OnDateSwitchToggled" />
+            </HorizontalStackLayout>
+
+            <!--  Дата выполнения  -->
+            <DatePicker
+                x:Name="TaskDatePicker"
+                IsEnabled="False"
+                MinimumDate="{x:Static sys:DateTime.Today}" />
+
+            <!--  Включение/Отключение времени выполнения  -->
+            <HorizontalStackLayout Margin="0,20,0,0">
+                <Label Text="Включить время выполнения" VerticalOptions="Center" />
+                <Switch
+                    x:Name="TimeSwitch"
+                    IsToggled="False"
+                    Toggled="OnTimeSwitchToggled" />
+            </HorizontalStackLayout>
+
+            <!--  Время выполнения  -->
+            <TimePicker x:Name="TaskTimePicker" IsEnabled="False" />
+
+            <!--  Повторение  -->
+            <Label Margin="0,20,0,0" Text="Повторение" />
+            <Picker x:Name="TaskRepeatPicker" Title="Никогда">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Никогда</x:String>
+                        <x:String>Каждый день</x:String>
+                        <x:String>Каждую неделю</x:String>
+                        <x:String>Каждый месяц</x:String>
+                        <x:String>Каждый год</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <!--  Кнопка создания  -->
+            <Button
+                Margin="0,30,0,0"
+                Clicked="OnCreateTaskButtonClicked"
+                Text="Создать задачу"
+                VerticalOptions="EndAndExpand" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentView>
