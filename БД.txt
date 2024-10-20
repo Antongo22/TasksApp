@@ -1,0 +1,8 @@
+Таблица - Tasks
+
+ID_Tasks - PK
+Name_Tasks - Varchar(100), not null
+Description_Tasks - Varchar(250), null
+Date_Of_End_Tasks - DateTime, null
+Repetitions_Tasks - Varchat(30), not null, ("never"/"every day"/"every week"/"every month"/"every year")
+Status_Tasks - Varchar(30), not null, ("process"/"completed"/"deleted")
