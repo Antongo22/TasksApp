@@ -6,6 +6,10 @@ namespace TasksApp.Data
 {
     public class TaskDatabase
     {
+        private static TaskDatabase _instance;
+        private static readonly object _lock = new object();
+
+
         private readonly string _connectionString;
 
         public TaskDatabase(string dbPath)
@@ -13,6 +17,27 @@ namespace TasksApp.Data
             _connectionString = $"Data Source={dbPath}";
             CreateTable();
         }
+
+
+        /// <summary>
+        /// Публичное свойство для доступа к единственному экземпляру класса (Singleton)
+        /// </summary>
+        public static TaskDatabase GetInstance(string dbPath)
+        {
+            if (_instance == null)
+            {
+                lock (_lock) 
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new TaskDatabase(dbPath);
+                    }
+                }
+            }
+            return _instance;
+        }
+
+
 
         /// <summary>
         /// Метод для создания таблицы
@@ -25,14 +50,14 @@ namespace TasksApp.Data
                 var command = connection.CreateCommand();
                 command.CommandText =
                 @"
-            CREATE TABLE IF NOT EXISTS Tasks (
-                ID_Tasks INTEGER PRIMARY KEY AUTOINCREMENT,
-                Name_Tasks TEXT NOT NULL,
-                Description_Tasks TEXT,
-                Date_Of_End_Tasks DATETIME,
-                Repetitions_Tasks TEXT NOT NULL,
-                Status_Tasks TEXT NOT NULL
-            );
+                    CREATE TABLE IF NOT EXISTS Tasks (
+                        ID_Tasks INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Name_Tasks TEXT NOT NULL,
+                        Description_Tasks TEXT,
+                        Date_Of_End_Tasks DATETIME,
+                        Repetitions_Tasks TEXT NOT NULL,
+                        Status_Tasks TEXT NOT NULL
+                    );
             ";
                 command.ExecuteNonQuery();
             }
