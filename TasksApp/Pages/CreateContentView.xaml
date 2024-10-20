@@ -47,18 +47,16 @@
 
             <!--  Повторение  -->
             <Label Margin="0,20,0,0" Text="Повторение" />
-            <Picker x:Name="TaskRepeatPicker" Title="Никогда">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Никогда</x:String>
-                        <x:String>Каждый день</x:String>
-                        <x:String>Каждую неделю</x:String>
-                        <x:String>Каждый месяц</x:String>
-                        <x:String>Каждый год</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
+            <Label Margin="0,20,0,0" Text="Повторение" />
+            <Picker
+                x:Name="TaskRepeatPicker"
+                Title="Выберите повторение"
+                ItemsSource="{Binding Repetitions}"
+                SelectedItem="{Binding SelectedRepetition}">
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="DisplayName" />
+                </Picker.ItemDisplayBinding>
             </Picker>
-
             <!--  Кнопка создания  -->
             <Button
                 Margin="0,30,0,0"

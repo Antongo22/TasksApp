@@ -12,9 +12,16 @@ namespace TasksApp.Data
 
         private readonly string _connectionString;
 
-        public TaskDatabase(string dbPath)
+        public TaskDatabase()
         {
-            _connectionString = $"Data Source={dbPath}";
+            string folderPath = FileSystem.AppDataDirectory;
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            string dbPath = Path.Combine(folderPath, "tasks.db");
+
+            _connectionString = $"Data Source={Path.Combine(FileSystem.AppDataDirectory, "tasks.db")}";
             CreateTable();
         }
 
@@ -22,7 +29,7 @@ namespace TasksApp.Data
         /// <summary>
         /// Публичное свойство для доступа к единственному экземпляру класса (Singleton)
         /// </summary>
-        public static TaskDatabase GetInstance(string dbPath)
+        public static TaskDatabase GetInstance()
         {
             if (_instance == null)
             {
@@ -30,7 +37,7 @@ namespace TasksApp.Data
                 {
                     if (_instance == null)
                     {
-                        _instance = new TaskDatabase(dbPath);
+                        _instance = new TaskDatabase();
                     }
                 }
             }

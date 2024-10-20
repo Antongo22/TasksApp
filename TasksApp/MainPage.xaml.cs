@@ -4,9 +4,9 @@ namespace TasksApp
 {
     public partial class MainPage : ContentPage
     {
-        MainContentView MainContentView;
-        CreateContentView CreateContentView;
-        SettingsContentView SettingsContentView;
+        public MainContentView MainContentView;
+        public CreateContentView CreateContentView;
+        public SettingsContentView SettingsContentView;
 
         public MainPage()
         {
@@ -15,8 +15,8 @@ namespace TasksApp
 
         private void ContentPage_Loaded(object sender, EventArgs e)
         {
-            MainContentView = new();
 
+            MainContentView = new();
             CreateContentView = new(this);
             SettingsContentView = new();
 
@@ -29,6 +29,12 @@ namespace TasksApp
             Title = "Задачи";
             MainFrame.Content = MainContentView;
         }
+
+        public void SetMainContentView()
+        {
+            MainFrame.Content = MainContentView;
+        }
+
 
         private void CreatePageButton_Clicked(object sender, EventArgs e)
         {

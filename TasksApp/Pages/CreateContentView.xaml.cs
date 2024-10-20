@@ -1,14 +1,65 @@
+using System.ComponentModel;
+using TasksApp.Data;
 namespace TasksApp.Pages;
+
+public class TaskRepetitionItem
+{
+    public string Id { get; set; }
+    public string DisplayName { get; set; }
+}
+
+public class CreateContentViewModel : INotifyPropertyChanged
+{
+    public List<TaskRepetitionItem> Repetitions { get; set; }
+
+    private TaskRepetitionItem _selectedRepetition;
+    public TaskRepetitionItem SelectedRepetition
+    {
+        get => _selectedRepetition;
+        set
+        {
+            _selectedRepetition = value;
+            OnPropertyChanged(nameof(SelectedRepetition));
+        }
+    }
+
+    public CreateContentViewModel()
+    {
+        Repetitions = new List<TaskRepetitionItem>
+        {
+            new TaskRepetitionItem { Id = "never", DisplayName = "Никогда" },
+            new TaskRepetitionItem { Id = "every_day", DisplayName = "Каждый день" },
+            new TaskRepetitionItem { Id = "every_week", DisplayName = "Каждую неделю" },
+            new TaskRepetitionItem { Id = "every_month", DisplayName = "Каждый месяц" },
+            new TaskRepetitionItem { Id = "every_year", DisplayName = "Каждый год" },
+        };
+
+        // Устанавливаем "Никогда" как выбранное значение по умолчанию
+        SelectedRepetition = Repetitions.FirstOrDefault(r => r.Id == "never");
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+
+
 
 public partial class CreateContentView : ContentView
 {
+    private TaskDatabase _taskDatabase; // Экземпляр базы данных
     MainPage ParentContentPage;
 
     public CreateContentView(MainPage ParentContentPage)
     {
         InitializeComponent();
+        BindingContext = new CreateContentViewModel();
 
         this.ParentContentPage = ParentContentPage;
+        this._taskDatabase = TaskDatabase.GetInstance();
 
         TaskDatePicker.MinimumDate = DateTime.Today;
     }
@@ -84,34 +135,65 @@ public partial class CreateContentView : ContentView
         }
     }
 
+    /// <summary>
+    /// Обработчик нажатия кнопки для создания задачи
+    /// </summary>
     private void OnCreateTaskButtonClicked(object sender, EventArgs e)
     {
+        // Получаем ViewModel из BindingContext
+        var viewModel = BindingContext as CreateContentViewModel;
+
         string taskTitle = TaskTitleEntry.Text;
         string taskDescription = TaskDescriptionEditor.Text;
         DateTime? taskDate = TaskDatePicker.IsEnabled ? TaskDatePicker.Date : (DateTime?)null;
         TimeSpan? taskTime = TaskTimePicker.IsEnabled ? TaskTimePicker.Time : (TimeSpan?)null;
-        string taskRepeat = TaskRepeatPicker.SelectedItem?.ToString();
+        string taskStatus = "process"; // Начальное состояние задачи
+
+        // Получаем ID выбранного повторения
+        string taskRepeatId = (viewModel.SelectedRepetition != null) ? viewModel.SelectedRepetition.Id : "never";
 
         if (string.IsNullOrWhiteSpace(taskTitle))
         {
             ShowAlert("Ошибка", "Пожалуйста, введите название задачи.", "OK");
-            return; 
+            return;
         }
+
+        DateTime? combinedDateTime = null;
 
         // Проверка на устаревшую дату и время
         if (taskDate.HasValue && taskTime.HasValue)
         {
-            DateTime combinedDateTime = taskDate.Value.Add(taskTime.Value);
+            combinedDateTime = taskDate.Value.Date.Add(taskTime.Value); // Объединяем дату и время
 
             if (combinedDateTime < DateTime.Now)
             {
                 ShowAlert("Ошибка", "Дата и время не могут быть в прошлом.", "OK");
-                return; 
+                return;
             }
         }
 
-        ShowAlert("Задача создана", $"Задача \"{taskTitle}\" создана.", "OK");
+        // Создаем модель задачи
+        var newTask = new TaskModel
+        {
+            Name_Tasks = taskTitle,
+            Description_Tasks = taskDescription,
+            Date_Of_End_Tasks = combinedDateTime, // Сохраняем как дату и время
+            Repetitions_Tasks = taskRepeatId, // Сохраняем как строку в базе данных
+            Status_Tasks = taskStatus
+        };
+
+        // Добавляем задачу в базу данных
+        _taskDatabase.AddTask(newTask);
+
+        ShowAlert("Задача создана", $"Задача \"{taskTitle}\" создана.\nДата - {combinedDateTime}", "OK");
+
+        ParentContentPage.CreateContentView = new(ParentContentPage);
+        ParentContentPage.SetMainContentView();
+        ParentContentPage.MainContentView.LoadTasks();
     }
+
+
+
 
 
     private void ShowAlert(string title, string message, string btn)
