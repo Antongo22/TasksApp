@@ -147,9 +147,8 @@ public partial class CreateContentView : ContentView
         string taskDescription = TaskDescriptionEditor.Text;
         DateTime? taskDate = TaskDatePicker.IsEnabled ? TaskDatePicker.Date : (DateTime?)null;
         TimeSpan? taskTime = TaskTimePicker.IsEnabled ? TaskTimePicker.Time : (TimeSpan?)null;
-        string taskStatus = "process"; // Начальное состояние задачи
+        string taskStatus = "process";
 
-        // Получаем ID выбранного повторения
         string taskRepeatId = (viewModel.SelectedRepetition != null) ? viewModel.SelectedRepetition.Id : "never";
 
         if (string.IsNullOrWhiteSpace(taskTitle))
@@ -160,10 +159,9 @@ public partial class CreateContentView : ContentView
 
         DateTime? combinedDateTime = null;
 
-        // Проверка на устаревшую дату и время
         if (taskDate.HasValue && taskTime.HasValue)
         {
-            combinedDateTime = taskDate.Value.Date.Add(taskTime.Value); // Объединяем дату и время
+            combinedDateTime = taskDate.Value.Date.Add(taskTime.Value); 
 
             if (combinedDateTime < DateTime.Now)
             {
@@ -172,17 +170,15 @@ public partial class CreateContentView : ContentView
             }
         }
 
-        // Создаем модель задачи
         var newTask = new TaskModel
         {
             Name_Tasks = taskTitle,
             Description_Tasks = taskDescription,
-            Date_Of_End_Tasks = combinedDateTime, // Сохраняем как дату и время
-            Repetitions_Tasks = taskRepeatId, // Сохраняем как строку в базе данных
+            Date_Of_End_Tasks = combinedDateTime,
+            Repetitions_Tasks = taskRepeatId, 
             Status_Tasks = taskStatus
         };
 
-        // Добавляем задачу в базу данных
         _taskDatabase.AddTask(newTask);
 
         ShowAlert("Задача создана", $"Задача \"{taskTitle}\" создана.\nДата - {combinedDateTime}", "OK");

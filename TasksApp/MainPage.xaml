@@ -14,34 +14,54 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="70" />
+                <RowDefinition Height="60" />
             </Grid.RowDefinitions>
 
             <Frame
                 x:Name="MainFrame"
                 Grid.Row="0"
-                Margin="0,0,0,10" />
+                Margin="0,0,0,0"
+                HasShadow="False"
+                BorderColor="Transparent"
+                Padding="0"
+                BackgroundColor="Transparent"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand" />
 
             <Grid
                 x:Name="bottom_panel"
                 Grid.Row="1"
-                Padding="10"
-                ColumnDefinitions="*,*,*">
+                Padding="0"
+                ColumnSpacing="0"
+                ColumnDefinitions="*,*,*"
+                BackgroundColor="#52408C">
                 <Button
                     x:Name="MainPageButton"
                     Grid.Column="0"
                     Clicked="MainPageButton_Clicked"
-                    Text="Главная" />
+                    HeightRequest="60"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    ImageSource="../Resources/Images/home_icon.png"
+                    HorizontalOptions="FillAndExpand" />
                 <Button
                     x:Name="CreatePageButton"
                     Grid.Column="1"
                     Clicked="CreatePageButton_Clicked"
-                    Text="Создать" />
+                    HeightRequest="60"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    ImageSource="../Resources/Images/create_icon.png"
+                    HorizontalOptions="FillAndExpand" />
                 <Button
                     x:Name="SettingsPageButton"
                     Grid.Column="2"
                     Clicked="SettingsPageButton_Clicked"
-                    Text="Настройки" />
+                    HeightRequest="60"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    ImageSource="../Resources/Images/settings_icon.png"
+                    HorizontalOptions="FillAndExpand" />
             </Grid>
         </Grid>
     </Grid>

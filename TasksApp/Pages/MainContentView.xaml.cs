@@ -1,5 +1,6 @@
 using TasksApp.Data;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Layouts;
 
 public static class TaskRepetitionHelper
 {
@@ -16,7 +17,6 @@ public static class TaskRepetitionHelper
         };
     }
 }
-
 
 namespace TasksApp.Pages
 {
@@ -36,20 +36,70 @@ namespace TasksApp.Pages
         /// </summary>
         public void LoadTasks()
         {
-            // Очищаем контейнер перед загрузкой новых данных
             TasksContainer.Children.Clear();
 
-            var tasks = _taskDatabase.GetTasks(); // Получаем список задач
+            var tasks = _taskDatabase.GetTasks();
 
-            foreach (var task in tasks)
+            var sortedTasks = tasks.OrderByDescending(task => !task.IsCompleted)
+                                   .ThenBy(task => task.Date_Of_End_Tasks)
+                                   .ToList();
+
+            foreach (var task in sortedTasks)
             {
-                // Создаем блок для каждой задачи
                 var taskBlock = CreateTaskBlock(task);
 
-                // Добавляем блок в контейнер
                 TasksContainer.Children.Add(taskBlock);
             }
         }
+
+
+        private string TruncateText(string text, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+            return text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;
+        }
+
+        private string TruncateMultilineText(string text, int maxLines, int maxCharsPerLine)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+
+            var words = text.Split(' ');
+            var lines = new List<string>();
+            var currentLine = "";
+
+            foreach (var word in words)
+            {
+                if (currentLine.Length + word.Length + 1 > maxCharsPerLine)
+                {
+                    lines.Add(currentLine);
+                    currentLine = word;
+
+                    if (lines.Count == maxLines - 1) 
+                    {
+                        currentLine = word;
+                        break;
+                    }
+                }
+                else
+                {
+                    currentLine += (currentLine.Length > 0 ? " " : "") + word;
+                }
+            }
+
+            if (lines.Count == maxLines - 1)
+            {
+                currentLine += "...";
+                lines.Add(currentLine);
+            }
+            else if (!string.IsNullOrEmpty(currentLine))
+            {
+                lines.Add(currentLine);
+            }
+
+            return string.Join("\n", lines);
+        }
+
+
 
         /// <summary>
         /// Метод для создания визуального блока для задачи
@@ -58,27 +108,28 @@ namespace TasksApp.Pages
         /// <returns>Возвращает Frame с данными задачи</returns>
         private Frame CreateTaskBlock(TaskModel task)
         {
-            // Создаем лейблы для отображения данных задачи
             var titleLabel = new Label
             {
-                Text = task.Name_Tasks,
+                Text = TruncateText(task.Name_Tasks, 20),
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.White // Цвет текста
+                TextColor = Colors.White,
+                LineBreakMode = LineBreakMode.NoWrap, 
+                MaxLines = 1
             };
 
             var descriptionLabel = new Label
             {
-                Text = string.IsNullOrEmpty(task.Description_Tasks) ? "Без описания" : task.Description_Tasks,
+                Text = TruncateMultilineText(string.IsNullOrEmpty(task.Description_Tasks) ? "Без описания" : task.Description_Tasks, 3, 30),
                 FontSize = 14,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.White, // Цвет текста
-                LineBreakMode = LineBreakMode.TailTruncation, // Обрезаем текст с многоточием в конце
-                MaxLines = 2 // Максимальное количество строк
+                TextColor = Colors.White,
+                LineBreakMode = LineBreakMode.WordWrap, 
+                MaxLines = 3
             };
 
-            // Проверка, чтобы не выводить время, если оно равно 00:00
+
             string dateTimeText;
             if (task.Date_Of_End_Tasks.HasValue)
             {
@@ -97,7 +148,7 @@ namespace TasksApp.Pages
                 Text = dateTimeText,
                 FontSize = 12,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.Gray // Цвет текста
+                TextColor = Colors.Gray
             };
 
             var repetitionLabel = new Label
@@ -105,37 +156,54 @@ namespace TasksApp.Pages
                 Text = $"Повторение: {TaskRepetitionHelper.ToDisplayString(task.Repetitions_Tasks)}",
                 FontSize = 12,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.Gray // Цвет текста
+                TextColor = Colors.Gray
             };
 
-            var statusLabel = new Label
+            var checkBox = new CheckBox
             {
-                Text = $"Статус: {task.Status_Tasks}",
-                FontSize = 12,
-                FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromArgb("#ccc") // Цвет текста
+                IsChecked = task.IsCompleted,
+                WidthRequest = 30,
+                HeightRequest = 30,
+                BackgroundColor = Color.FromArgb("#222"),
+                Color = Color.FromArgb("#9880e5")
             };
 
-            // Создаем StackLayout для объединения элементов задачи
+            checkBox.CheckedChanged += (sender, e) =>
+            {
+                if (sender is CheckBox cb)
+                {
+                    task.IsCompleted = cb.IsChecked;
+                    _taskDatabase.UpdateTask(task);
+                    LoadTasks();
+                }
+            };
+
             var taskLayout = new VerticalStackLayout
             {
                 Spacing = 5,
-                Children = { titleLabel, descriptionLabel, dateLabel, repetitionLabel, statusLabel }
+                Children = { titleLabel, descriptionLabel, dateLabel, repetitionLabel }
             };
 
-            // Создаем карточку (Frame) для задачи с фиксированной высотой
+            var absoluteLayout = new AbsoluteLayout
+            {
+                Children = { taskLayout }
+            };
+
+            AbsoluteLayout.SetLayoutFlags(checkBox, AbsoluteLayoutFlags.PositionProportional);
+            AbsoluteLayout.SetLayoutBounds(checkBox, new Rect(1, 0, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
+            absoluteLayout.Children.Add(checkBox);
+
             var taskFrame = new Frame
             {
-                Content = taskLayout,
+                Content = absoluteLayout,
                 BorderColor = Color.FromArgb("#444"),
                 CornerRadius = 8,
                 Padding = 10,
-                BackgroundColor = Color.FromArgb("#222"), // Темный фон
-                HeightRequest = 150 // Задаем фиксированную высоту блока задачи
+                BackgroundColor = Color.FromArgb("#222"),
+                HeightRequest = 125
             };
 
             return taskFrame;
         }
-
     }
 }
