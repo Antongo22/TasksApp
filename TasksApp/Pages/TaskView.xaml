@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentView.BackgroundColor>
-        <!-- Темный фон как у других страниц -->
+        <!--  Темный фон как у других страниц  -->
         <Color>#1e1e1e</Color>
     </ContentView.BackgroundColor>
 
@@ -13,17 +13,17 @@
             <Frame
                 Margin="0,5,0,5"
                 Padding="10"
-                BackgroundColor="#222" 
+                BackgroundColor="#222"
+                BorderColor="#444"
                 CornerRadius="8"
-                HasShadow="True"
-                BorderColor="#444">
+                HasShadow="True">
 
                 <VerticalStackLayout Spacing="8">
                     <Label
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalOptions="Start"
-                        LineBreakMode="WordWrap" 
+                        LineBreakMode="WordWrap"
                         Text="{Binding Name_Tasks}"
                         TextColor="White" />
 
@@ -34,21 +34,18 @@
                         MaxLines="0"
                         Text="{Binding Description_Tasks, StringFormat='Описание: {0}'}"
                         TextColor="White" />
-                    <!-- Белый цвет текста для описания -->
 
                     <Label
                         x:Name="DateLabel"
                         FontSize="13"
                         HorizontalOptions="Start"
                         TextColor="Gray" />
-                    <!-- Серый цвет текста для даты -->
 
                     <Label
                         x:Name="RepetitionLabel"
                         FontSize="13"
                         HorizontalOptions="Start"
                         TextColor="Gray" />
-                    <!-- Серый цвет текста для повторения -->
 
                     <HorizontalStackLayout Spacing="10">
                         <Label
@@ -56,15 +53,21 @@
                             TextColor="White"
                             VerticalOptions="Center" />
                         <CheckBox
-                            BackgroundColor="#222222" 
+                            BackgroundColor="#222222"
                             CheckedChanged="OnCheckBoxChanged"
                             HeightRequest="30"
                             HorizontalOptions="Start"
                             IsChecked="{Binding IsCompleted}"
                             WidthRequest="30"
                             Color="#9880e5" />
-                            <!-- Фиолетовый цвет для отмеченного состояния -->
                     </HorizontalStackLayout>
+
+                    <Button
+                        BackgroundColor="#e53935"
+                        Clicked="OnDeleteButtonClicked"
+                        CornerRadius="8"
+                        Text="Удалить задачу"
+                        TextColor="White" />
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>

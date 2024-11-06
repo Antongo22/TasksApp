@@ -208,7 +208,7 @@ namespace TasksApp.Pages
             {
                 Command = new Command(() =>
                 {
-                    _mainPage.SetMainFrame(new TaskView(task)); 
+                    _mainPage.SetMainFrame(new TaskView(task, _mainPage)); 
                 })
             });
 

@@ -7,14 +7,15 @@ namespace TasksApp.Pages
     {
         TaskModel task;
         TaskDatabase _taskDatabase = TaskDatabase.GetInstance();
+        MainPage mainPage;
 
-        public TaskView(TaskModel task)
+        public TaskView(TaskModel task, MainPage mainPage)
         {
             this.task = task;
             InitializeComponent();
             BindingContext = task;
+            this.mainPage = mainPage;
 
-            // Устанавливаем отформатированные значения
             DateLabel.Text = FormatDate(task.Date_Of_End_Tasks);
             RepetitionLabel.Text = $"Повторение: {TaskRepetitionHelper.ToDisplayString(task.Repetitions_Tasks)}";
         }
@@ -35,6 +36,23 @@ namespace TasksApp.Pages
                     : dateTime.ToString("dd.MM.yyyy HH:mm");
             }
             return "Без даты";
+        }
+
+        private async void OnDeleteButtonClicked(object sender, EventArgs e)
+        {
+            // Показываем диалоговое окно подтверждения
+            bool confirm = await Application.Current.MainPage.DisplayAlert(
+                "Подтверждение удаления",
+                "Вы уверены, что хотите удалить эту задачу?",
+                "Да", "Отмена");
+
+            if (confirm && task!=null)
+            {
+                // Удаляем задачу и возвращаемся к списку задач
+                _taskDatabase.DeleteTask(task.ID_Tasks);
+                mainPage.SetMainContentView();
+                await Application.Current.MainPage.Navigation.PopAsync();
+            }
         }
     }
 }
