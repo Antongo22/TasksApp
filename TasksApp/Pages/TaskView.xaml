@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="TasksApp.Pages.TaskView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentView.BackgroundColor>
+        <!-- Темный фон как у других страниц -->
+        <Color>#1e1e1e</Color>
+    </ContentView.BackgroundColor>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="15">
+            <Frame
+                Margin="0,5,0,5"
+                Padding="10"
+                BackgroundColor="#222" 
+                CornerRadius="8"
+                HasShadow="True"
+                BorderColor="#444">
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Start"
+                        LineBreakMode="WordWrap" 
+                        Text="{Binding Name_Tasks}"
+                        TextColor="White" />
+
+                    <Label
+                        FontSize="15"
+                        HorizontalOptions="Start"
+                        LineBreakMode="WordWrap"
+                        MaxLines="0"
+                        Text="{Binding Description_Tasks, StringFormat='Описание: {0}'}"
+                        TextColor="White" />
+                    <!-- Белый цвет текста для описания -->
+
+                    <Label
+                        x:Name="DateLabel"
+                        FontSize="13"
+                        HorizontalOptions="Start"
+                        TextColor="Gray" />
+                    <!-- Серый цвет текста для даты -->
+
+                    <Label
+                        x:Name="RepetitionLabel"
+                        FontSize="13"
+                        HorizontalOptions="Start"
+                        TextColor="Gray" />
+                    <!-- Серый цвет текста для повторения -->
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label
+                            Text="Завершено:"
+                            TextColor="White"
+                            VerticalOptions="Center" />
+                        <CheckBox
+                            BackgroundColor="#222222" 
+                            CheckedChanged="OnCheckBoxChanged"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            IsChecked="{Binding IsCompleted}"
+                            WidthRequest="30"
+                            Color="#9880e5" />
+                            <!-- Фиолетовый цвет для отмеченного состояния -->
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

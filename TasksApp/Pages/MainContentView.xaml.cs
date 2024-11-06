@@ -23,12 +23,13 @@ namespace TasksApp.Pages
     public partial class MainContentView : ContentView
     {
         private TaskDatabase _taskDatabase;
+        MainPage _mainPage;
 
-        public MainContentView()
+        public MainContentView(MainPage mainPage)
         {
             InitializeComponent();
             _taskDatabase = TaskDatabase.GetInstance();
-            LoadTasks();
+            _mainPage = mainPage;
         }
 
         /// <summary>
@@ -202,6 +203,15 @@ namespace TasksApp.Pages
                 BackgroundColor = Color.FromArgb("#222"),
                 HeightRequest = 125
             };
+
+            taskFrame.GestureRecognizers.Add(new TapGestureRecognizer
+            {
+                Command = new Command(() =>
+                {
+                    _mainPage.SetMainFrame(new TaskView(task)); 
+                })
+            });
+
 
             return taskFrame;
         }

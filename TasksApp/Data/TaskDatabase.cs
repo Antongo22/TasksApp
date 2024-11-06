@@ -12,7 +12,7 @@ namespace TasksApp.Data
 
         private readonly string _connectionString;
 
-        public TaskDatabase()
+        private TaskDatabase()
         {
             string folderPath = FileSystem.AppDataDirectory;
             if (!Directory.Exists(folderPath))

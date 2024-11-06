@@ -15,37 +15,34 @@ namespace TasksApp
 
         private void ContentPage_Loaded(object sender, EventArgs e)
         {
-
-            MainContentView = new();
+            MainContentView = new(this);
             CreateContentView = new(this);
             SettingsContentView = new();
-
-
-            MainFrame.Content = MainContentView;
+            SetMainContentView();
         }
 
         private void MainPageButton_Clicked(object sender, EventArgs e)
         {
             Title = "Задачи";
-            MainFrame.Content = MainContentView;
+            SetMainContentView();
         }
 
         public void SetMainContentView()
         {
-            MainFrame.Content = MainContentView;
+            SetMainFrame(MainContentView);
+            MainContentView.LoadTasks();
         }
-
 
         private void CreatePageButton_Clicked(object sender, EventArgs e)
         {
             Title = "Создать задачу";
-            MainFrame.Content = CreateContentView;
+            SetMainFrame(CreateContentView);
         }
 
         private void SettingsPageButton_Clicked(object sender, EventArgs e)
         {
             Title = "Настройки";
-            MainFrame.Content = SettingsContentView;
+            SetMainFrame(SettingsContentView);
         }
 
         public void DA(string title, string message, string btn)
@@ -53,6 +50,34 @@ namespace TasksApp
             DisplayAlert(title, message, btn);
         }
 
-    }
+        public void SetMainFrame(ContentView contentView)
+        {
+            MainFrame.Content = contentView;
+        }
 
+        protected override bool OnBackButtonPressed()
+        {
+            if (MainFrame.Content == MainContentView)
+            {
+                ConfirmExit();
+                return true; 
+            }
+            else
+            {
+                SetMainContentView();
+                Title = "Задачи";
+                return true; 
+            }
+        }
+
+        private async void ConfirmExit()
+        {
+            bool answer = await DisplayAlert("Подтверждение", "Точно ли вы хотите выйти?", "Да", "Нет");
+            if (answer)
+            {
+                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
+            }
+        }
+
+    }
 }
