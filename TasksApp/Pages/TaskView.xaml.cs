@@ -46,13 +46,20 @@ namespace TasksApp.Pages
                 "Вы уверены, что хотите удалить эту задачу?",
                 "Да", "Отмена");
 
-            if (confirm && task!=null)
+            if (confirm && task != null)
             {
                 // Удаляем задачу и возвращаемся к списку задач
                 _taskDatabase.DeleteTask(task.ID_Tasks);
                 mainPage.SetMainContentView();
                 await Application.Current.MainPage.Navigation.PopAsync();
             }
+        }
+
+        private void OnEditButtonClicked(object sender, EventArgs e)
+        {
+            // Переходим на страницу редактирования задачи
+            var editContentView = new EditContentView(mainPage, task);
+            mainPage.SetMainFrame(editContentView);
         }
     }
 }

@@ -7,6 +7,8 @@ namespace TasksApp
         public MainContentView MainContentView;
         public CreateContentView CreateContentView;
         public SettingsContentView SettingsContentView;
+        ContentView SelectedContentView;
+        ContentView LastContentView;
 
         public MainPage()
         {
@@ -52,6 +54,8 @@ namespace TasksApp
 
         public void SetMainFrame(ContentView contentView)
         {
+            LastContentView = SelectedContentView;
+            SelectedContentView = contentView;
             MainFrame.Content = contentView;
         }
 
@@ -61,6 +65,11 @@ namespace TasksApp
             {
                 ConfirmExit();
                 return true; 
+            }
+            else if (SelectedContentView is EditContentView)
+            {
+                SetMainFrame(LastContentView);
+                return true;
             }
             else
             {

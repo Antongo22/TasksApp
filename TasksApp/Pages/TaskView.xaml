@@ -68,6 +68,14 @@
                         CornerRadius="8"
                         Text="Удалить задачу"
                         TextColor="White" />
+
+                    <!--  Добавляем кнопку для редактирования задачи  -->
+                    <Button
+                        BackgroundColor="#4CAF50"
+                        Clicked="OnEditButtonClicked"
+                        CornerRadius="8"
+                        Text="Редактировать задачу"
+                        TextColor="White" />
                 </VerticalStackLayout>
             </Frame>
         </VerticalStackLayout>
