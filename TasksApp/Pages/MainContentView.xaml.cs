@@ -42,7 +42,7 @@ namespace TasksApp.Pages
             var tasks = _taskDatabase.GetTasks();
 
             var sortedTasks = tasks.OrderByDescending(task => !task.IsCompleted)
-                                   .ThenBy(task => task.Date_Of_End_Tasks)
+                                   .ThenBy(task => task.Date_Of_End_Tasks.HasValue ? task.Date_Of_End_Tasks.Value : DateTime.MinValue)
                                    .ToList();
 
             foreach (var task in sortedTasks)
@@ -52,7 +52,6 @@ namespace TasksApp.Pages
                 TasksContainer.Children.Add(taskBlock);
             }
         }
-
 
         private string TruncateText(string text, int maxLength)
         {
@@ -115,8 +114,7 @@ namespace TasksApp.Pages
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.White,
-                LineBreakMode = LineBreakMode.NoWrap, 
+                LineBreakMode = LineBreakMode.NoWrap,
                 MaxLines = 1
             };
 
@@ -125,19 +123,31 @@ namespace TasksApp.Pages
                 Text = TruncateMultilineText(string.IsNullOrEmpty(task.Description_Tasks) ? "Без описания" : task.Description_Tasks, 3, 30),
                 FontSize = 14,
                 HorizontalOptions = LayoutOptions.Start,
-                TextColor = Colors.White,
-                LineBreakMode = LineBreakMode.WordWrap, 
+                LineBreakMode = LineBreakMode.WordWrap,
                 MaxLines = 3
             };
-
 
             string dateTimeText;
             if (task.Date_Of_End_Tasks.HasValue)
             {
                 var dateTime = task.Date_Of_End_Tasks.Value;
-                dateTimeText = dateTime.TimeOfDay.TotalHours == 0 ?
-                    dateTime.ToString("dd.MM.yyyy") :
-                    dateTime.ToString("dd.MM.yyyy HH:mm");
+                var today = DateTime.Today;
+                var tomorrow = today.AddDays(1);
+
+                if (dateTime.Date == today)
+                {
+                    dateTimeText = "Сегодня";
+                }
+                else if (dateTime.Date == tomorrow)
+                {
+                    dateTimeText = "Завтра";
+                }
+                else
+                {
+                    dateTimeText = dateTime.TimeOfDay.TotalHours == 0 ?
+                        dateTime.ToString("dd.MM.yyyy") :
+                        dateTime.ToString("dd.MM.yyyy HH:mm");
+                }
             }
             else
             {
@@ -179,6 +189,49 @@ namespace TasksApp.Pages
                 }
             };
 
+            // Установка цвета текста в зависимости от статуса задачи
+            if (task.IsCompleted)
+            {
+                titleLabel.TextColor = Colors.Green;
+                descriptionLabel.TextColor = Colors.Green;
+                dateLabel.TextColor = Colors.Green;
+                repetitionLabel.TextColor = Colors.Green;
+            }
+            else if (task.Date_Of_End_Tasks.HasValue)
+            {
+                var endDate = task.Date_Of_End_Tasks.Value;
+                var today = DateTime.Today;
+
+                if (endDate < today)
+                {
+                    titleLabel.TextColor = Colors.Red;
+                    descriptionLabel.TextColor = Colors.Red;
+                    dateLabel.TextColor = Colors.Red;
+                    repetitionLabel.TextColor = Colors.Red;
+                }
+                else if (endDate.Date == today)
+                {
+                    titleLabel.TextColor = Colors.Blue;
+                    descriptionLabel.TextColor = Colors.Blue;
+                    dateLabel.TextColor = Colors.Blue;
+                    repetitionLabel.TextColor = Colors.Blue;
+                }
+                else
+                {
+                    titleLabel.TextColor = Colors.White;
+                    descriptionLabel.TextColor = Colors.White;
+                    dateLabel.TextColor = Colors.Gray;
+                    repetitionLabel.TextColor = Colors.Gray;
+                }
+            }
+            else
+            {
+                titleLabel.TextColor = Colors.White;
+                descriptionLabel.TextColor = Colors.White;
+                dateLabel.TextColor = Colors.Gray;
+                repetitionLabel.TextColor = Colors.Gray;
+            }
+
             var taskLayout = new VerticalStackLayout
             {
                 Spacing = 5,
@@ -208,10 +261,9 @@ namespace TasksApp.Pages
             {
                 Command = new Command(() =>
                 {
-                    _mainPage.SetMainFrame(new TaskView(task, _mainPage)); 
+                    _mainPage.SetMainFrame(new TaskView(task, _mainPage));
                 })
             });
-
 
             return taskFrame;
         }
