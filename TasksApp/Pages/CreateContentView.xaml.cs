@@ -158,12 +158,21 @@ public partial class CreateContentView : ContentView
         }
 
         DateTime? combinedDateTime = null;
-
-        if (taskDate.HasValue && taskTime.HasValue)
+        DateTime? checkcombinedDateTime = null;
+        if (taskDate.HasValue)
         {
-            combinedDateTime = taskDate.Value.Date.Add(taskTime.Value); 
+            if (taskTime.HasValue)
+            {
+                combinedDateTime = taskDate.Value.Date.Add(taskTime.Value);
+                checkcombinedDateTime = taskDate.Value.Date.Add(taskTime.Value);
+            }
+            else
+            {
+                combinedDateTime = taskDate.Value.Date.Add(TimeSpan.Zero); // Устанавливаем время в 00:00:00
+                checkcombinedDateTime = taskDate.Value.Date.Add(new TimeSpan(23, 59, 0));
+            }
 
-            if (combinedDateTime < DateTime.Now)
+            if (checkcombinedDateTime < DateTime.Now)
             {
                 ShowAlert("Ошибка", "Дата и время не могут быть в прошлом.", "OK");
                 return;
@@ -175,7 +184,7 @@ public partial class CreateContentView : ContentView
             Name_Tasks = taskTitle,
             Description_Tasks = taskDescription,
             Date_Of_End_Tasks = combinedDateTime,
-            Repetitions_Tasks = taskRepeatId, 
+            Repetitions_Tasks = taskRepeatId,
             Status_Tasks = taskStatus
         };
 

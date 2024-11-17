@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35323.107
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksApp", "TasksApp\TasksApp.csproj", "{10F8878C-0382-4EE6-892C-9646D4867B8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasksAppTests", "TasksAppTests\TasksAppTests.csproj", "{226AD619-7D30-4DA8-8EEE-DF8D8C942023}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,6 +18,10 @@ Global
 		{10F8878C-0382-4EE6-892C-9646D4867B8B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{10F8878C-0382-4EE6-892C-9646D4867B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10F8878C-0382-4EE6-892C-9646D4867B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226AD619-7D30-4DA8-8EEE-DF8D8C942023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226AD619-7D30-4DA8-8EEE-DF8D8C942023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226AD619-7D30-4DA8-8EEE-DF8D8C942023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226AD619-7D30-4DA8-8EEE-DF8D8C942023}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

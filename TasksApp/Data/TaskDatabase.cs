@@ -171,5 +171,43 @@ namespace TasksApp.Data
                 command.ExecuteNonQuery();
             }
         }
+
+
+        /// <summary>
+        /// Метод для обновления даты задач, если они просрочены и имеют повторение
+        /// </summary>
+        public void UpdateOverdueTasks()
+        {
+            var tasks = GetTasks();
+            foreach (var task in tasks)
+            {
+                if (task.Date_Of_End_Tasks.HasValue && task.Date_Of_End_Tasks.Value < DateTime.Now && task.Repetitions_Tasks != "never")
+                {
+                    DateTime newDate = task.Date_Of_End_Tasks.Value;
+
+                    switch (task.Repetitions_Tasks)
+                    {
+                        case "every day":
+                            newDate = newDate.AddDays(1);
+                            break;
+                        case "every week":
+                            newDate = newDate.AddDays(7);
+                            break;
+                        case "every month":
+                            newDate = newDate.AddMonths(1);
+                            break;
+                        case "every year":
+                            newDate = newDate.AddYears(1);
+                            break;
+                        default:
+                            // Если значение не соответствует ни одному из известных, можно либо пропустить, либо выбросить исключение
+                            continue;
+                    }
+
+                    task.Date_Of_End_Tasks = newDate;
+                    UpdateTask(task);
+                }
+            }
+        }
     }
 }

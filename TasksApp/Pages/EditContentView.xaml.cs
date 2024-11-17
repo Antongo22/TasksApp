@@ -179,19 +179,21 @@ namespace TasksApp.Pages
             }
 
             DateTime? combinedDateTime = null;
-
+            DateTime? checkcombinedDateTime = null;
             if (taskDate.HasValue)
             {
                 if (taskTime.HasValue)
                 {
                     combinedDateTime = taskDate.Value.Date.Add(taskTime.Value);
+                    checkcombinedDateTime = taskDate.Value.Date.Add(taskTime.Value);
                 }
                 else
                 {
-                    combinedDateTime = taskDate.Value.Date;
+                    combinedDateTime = taskDate.Value.Date.Add(TimeSpan.Zero); 
+                    checkcombinedDateTime = taskDate.Value.Date.Add(new TimeSpan(23, 59, 0));
                 }
 
-                if (combinedDateTime < DateTime.Now)
+                if (checkcombinedDateTime < DateTime.Now)
                 {
                     ShowAlert("Ошибка", "Дата и время не могут быть в прошлом.", "OK");
                     return;
